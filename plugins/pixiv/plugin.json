@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "version": "0.1.0",
+  "enabled": true,
+  "id": "pixiv",
+  "name": "Pixiv",
+  "category": "创作社区",
+  "description": "图片投稿：PNG/JPEG/静态 GIF，支持多图、标签、AI 标记和工作区年龄限制。网页接口适配，需配置登录；尚未实号验证。",
+  "status": "ready",
+  "kinds": [
+    "image"
+  ],
+  "acceptsTitle": true,
+  "acceptsBody": true,
+  "maxFiles": 200,
+  "maxFileBytes": 33554432,
+  "entry": {
+    "type": "process",
+    "path": "plugin.exe"
+  },
+  "timeoutSeconds": 7200
+}

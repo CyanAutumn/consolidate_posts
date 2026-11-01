@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "version": "0.1.0",
+  "enabled": true,
+  "id": "bilibili",
+  "name": "哔哩哔哩",
+  "category": "视频平台",
+  "description": "计划接入视频投稿，需平台授权。",
+  "status": "planned",
+  "kinds": [
+    "image",
+    "video"
+  ],
+  "acceptsTitle": true,
+  "acceptsBody": true,
+  "maxFiles": null,
+  "maxFileBytes": null,
+  "entry": {
+    "type": "process",
+    "path": "plugin.exe"
+  },
+  "timeoutSeconds": 7200
+}

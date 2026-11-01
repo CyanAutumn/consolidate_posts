@@ -1,0 +1,17 @@
+[package]
+name = "upload-plugin-sdk"
+version = "0.1.0"
+edition = "2021"
+description = "Upload Hub plugins: shared types and one JSON Lines entry point"
+
+[dependencies]
+upload-core = { path = "../upload-core" }
+serde_json = "1"
+
+[dev-dependencies]
+tempfile = "3"
+
+[[bin]]
+name = "plugin-contract-fixture"
+path = "tests/support/fixture.rs"
+test = false

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "version": "0.1.0",
+  "enabled": true,
+  "id": "xiaohongshu",
+  "name": "小红书",
+  "category": "内容社区",
+  "description": "计划支持图文笔记和视频笔记。",
+  "status": "planned",
+  "kinds": [
+    "image",
+    "video"
+  ],
+  "acceptsTitle": true,
+  "acceptsBody": true,
+  "maxFiles": null,
+  "maxFileBytes": null,
+  "entry": {
+    "type": "process",
+    "path": "plugin.exe"
+  },
+  "timeoutSeconds": 7200
+}

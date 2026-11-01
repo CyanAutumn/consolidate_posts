@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "version": "0.1.0",
+  "enabled": true,
+  "id": "civitai",
+  "name": "Civitai",
+  "category": "模型社区",
+  "description": "计划支持模型版本、示例图和说明。",
+  "status": "planned",
+  "kinds": [
+    "image",
+    "model"
+  ],
+  "acceptsTitle": true,
+  "acceptsBody": true,
+  "maxFiles": null,
+  "maxFileBytes": null,
+  "entry": {
+    "type": "process",
+    "path": "plugin.exe"
+  },
+  "timeoutSeconds": 7200
+}

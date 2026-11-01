@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "version": "0.1.0",
+  "enabled": true,
+  "id": "x",
+  "name": "X (Twitter)",
+  "category": "社交平台",
+  "description": "使用独立浏览器登录态发布文字、最多四张图片、单个 GIF 或 MP4 视频；首次需手动登录，默认无头运行。网页适配，尚未实号发布验证。",
+  "status": "ready",
+  "kinds": ["image", "video"],
+  "acceptsTitle": true,
+  "acceptsBody": true,
+  "maxFiles": 4,
+  "maxFileBytes": 536870912,
+  "entry": { "type": "process", "path": "plugin.exe" },
+  "timeoutSeconds": 1800
+}

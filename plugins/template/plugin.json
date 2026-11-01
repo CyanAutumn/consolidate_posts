@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "version": "0.1.0",
+  "enabled": false,
+  "id": "example-uploader",
+  "name": "插件模板（本地导出示例）",
+  "category": "示例插件",
+  "description": "可编译运行的 Rust 插件模板，示例执行本地导出，不会上传到远端。",
+  "status": "ready",
+  "kinds": ["image", "video", "text", "model", "file"],
+  "acceptsTitle": true,
+  "acceptsBody": true,
+  "maxFiles": 100,
+  "maxFileBytes": null,
+  "entry": { "type": "process", "path": "plugin.exe" },
+  "timeoutSeconds": 7200
+}

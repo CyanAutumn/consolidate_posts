@@ -1,0 +1,10 @@
+[package]
+name = "upload-plugin-example"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+upload-plugin-sdk = { path = "../../crates/upload-plugin-sdk" }
+
+# The template and copied plugins build independently of the host workspace.
+[workspace]

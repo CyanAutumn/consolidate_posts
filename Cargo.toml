@@ -1,0 +1,5 @@
+[workspace]
+members = ["crates/upload-core", "crates/upload-plugin-sdk", "src-tauri"]
+exclude = ["plugins/template", "plugins/pixiv", "plugins/x"]
+default-members = ["crates/upload-core"]
+resolver = "2"

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "version": "0.1.0",
+  "enabled": true,
+  "id": "local-archive",
+  "name": "本地导出",
+  "category": "本地驱动",
+  "description": "按账号标识导出到独立目录，用于验证上传和历史补传。每次发布另有自动本地归档。",
+  "status": "ready",
+  "kinds": [
+    "image",
+    "video",
+    "text",
+    "model",
+    "file"
+  ],
+  "acceptsTitle": true,
+  "acceptsBody": true,
+  "maxFiles": 100,
+  "maxFileBytes": null,
+  "entry": {
+    "type": "builtin",
+    "name": "local-archive"
+  },
+  "timeoutSeconds": 7200
+}
