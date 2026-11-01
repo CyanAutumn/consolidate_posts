@@ -125,7 +125,7 @@ export default function App({ client: rootClient = api }: { client?: Client }) {
   const primaryTargets = platformTargets(history.targets, snapshot?.platformAccounts);
   const normalizedSelection = normalizePlatforms(selected, history.targets, snapshot?.platformAccounts);
   const targets = primaryTargets.flatMap((target) => {
-    const driver = drivers.find((driver) => driver.id === target.driverId);
+    const driver = catalog.find((driver) => driver.id === target.driverId);
     return driver ? [{ target, driver }] : [];
   });
   const chosen = normalizedSelection.filter((id) =>
@@ -573,6 +573,7 @@ export default function App({ client: rootClient = api }: { client?: Client }) {
                     <div className="driver-options">
                       {shownTargets.map(({ target, driver }) => {
                         const issues = compatibility(driver, draft, assets);
+                        const workspaceEnabled = snapshot.workspace.enabledDriverIds.includes(driver.id);
                         const enabled =
                           driver.status === "ready" && !issues.length;
                         const check = validation.find(
@@ -584,7 +585,15 @@ export default function App({ client: rootClient = api }: { client?: Client }) {
                             className={`driver-option ${chosen.includes(target.id) ? "selected" : ""}`}
                             disabled={!enabled || busy}
                             aria-pressed={chosen.includes(target.id)}
-                            onClick={() => toggle(target.id)}
+                            onClick={() => {
+                              if (!workspaceEnabled) {
+                                void workspace.updateWorkspace({
+                                  name: snapshot.workspace.name,
+                                  contentRating: snapshot.workspace.contentRating,
+                                  enabledDriverIds: [...snapshot.workspace.enabledDriverIds, driver.id],
+                                });
+                              } else toggle(target.id);
+                            }}
                             title={issues.join("；") || driver.description}
                           >
                             <DriverMark driver={driver} />
@@ -600,7 +609,7 @@ export default function App({ client: rootClient = api }: { client?: Client }) {
                                       : "待接入"
                                     : issues.length
                                       ? "不兼容"
-                                      : "可用"}
+                                      : !workspaceEnabled ? "点击启用" : "可用"}
                                 </span>
                               </strong>
                               <small>{driver.id === "local-archive" ? "保存到本机" : snapshot.platformAccounts?.find(a => a.driverId === driver.id)?.connected ? "已登录" : "未登录"}</small>

@@ -10,7 +10,7 @@ import { upload } from "../runner.mjs";
 let directory, context;
 const config = { username: "test_user", userId: "123", headless: true, sensitive: false };
 const requests = [];
-const mode = { status: 200, invalid: false, mediaCount: null, dropOutgoing: false };
+const mode = { localized: false, status: 200, invalid: false, mediaCount: null, dropOutgoing: false };
 const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLbtAAAAABJRU5ErkJggg==", "base64");
 
 function fixture() {
@@ -24,7 +24,7 @@ function fixture() {
     <script>
       const input = document.querySelector('input');
       input.onchange = () => {
-        document.querySelector('[data-testid="attachments"]').innerHTML = Array.from(input.files).map(() => '<button data-testid="removeMedia">Remove</button>').join('');
+        document.querySelector('[data-testid="attachments"]').innerHTML = Array.from(input.files).map(() => '${mode.localized ? '<button aria-label="移除媒体">移除</button>' : '<button data-testid="removeMedia">Remove</button>'}').join('');
       };
       document.querySelector('[data-testid="tweetButton"]').onclick = async () => {
         const variables = {
@@ -45,7 +45,7 @@ before(async () => {
   ]);
   // Every page request is intercepted. No real X traffic or account is used.
   await context.route("**/*", async (route) => {
-    if (route.request().url() === "https://x.com/compose/post") return route.fulfill({ contentType: "text/html", body: fixture() });
+    if (route.request().url() === "https://x.com/compose/post") return route.fulfill({ contentType: "text/html; charset=utf-8", body: fixture() });
     if (route.request().url() === "https://x.com/i/api/graphql/fixture/CreateTweet") {
       const body = route.request().postDataJSON();
       requests.push(body);
@@ -155,4 +155,12 @@ test("upload orchestration forces sensitive media for an R18 workspace", async (
   assert.equal(requestedHeadless, true);
   assert.equal(receipt.location, "https://x.com/test_user/status/456");
   assert.equal(requests.at(-1).variables.possibly_sensitive, true);
+});
+
+test("Chinese media removal buttons without a test ID count as accepted attachments", async () => {
+  mode.status=200;mode.invalid=false;mode.mediaCount=null;mode.dropOutgoing=false;mode.localized=true;
+  try {
+    const file=path.join(directory,"localized.png");await writeFile(file,png);
+    assert.equal((await posting("localized",[{name:"localized.png",path:file,size:png.length,kind:"image"}])).location,"https://x.com/test_user/status/456");
+  } finally { mode.localized=false; }
 });

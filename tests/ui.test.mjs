@@ -494,7 +494,7 @@ test("workspaces save separate drafts and account selections, filter plugins, an
       "workspace-1",
     );
     assert.equal(view.element.querySelector("#title").value, "");
-    assert.equal(view.element.querySelectorAll(".driver-option").length, 2);
+    assert.equal(view.element.querySelectorAll(".driver-option").length, 7);
     assert.match(
       view.element.querySelector(".workspace-context").textContent,
       /R18 专用/,
@@ -535,7 +535,7 @@ test("workspaces save separate drafts and account selections, filter plugins, an
     );
     await click(button(view.element, "保存工作区设置"));
     await click(button(view.element, "新建发布"));
-    assert.equal(view.element.querySelectorAll(".driver-option").length, 1);
+    assert.equal(view.element.querySelectorAll(".driver-option").length, 7);
     assert.equal(
       view.element.querySelectorAll(".driver-option.selected").length,
       0,

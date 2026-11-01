@@ -1,3 +1,4 @@
+import { saveSession } from "./session.mjs";
 import { readFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -70,7 +71,10 @@ async function login(args) {
       let previous;
       try { previous = JSON.parse(await readFile(path.join(directory, "config.json"), "utf8")); } catch (error) { if (error.code !== "ENOENT") throw new PluginError("x_config", "现有 X 配置损坏；请备份并检查后再配置"); }
       if (previous && previous.userId !== actual.userId) throw new PluginError("x_account", "此目标原来属于另一个 X 账号，请在主程序新建目标后配置，避免混用发布记录");
+      await saveSession(context, path.join(directory, "profile"));
       await atomicJson(path.join(directory, "config.json"), { ...actual, headless: !values.headed, sensitive: previous?.sensitive ?? false });
+      await context.close();
+      await checkLogin(directory);
       console.error(`已保存 @${actual.username} 的独立浏览器登录态。默认${values.headed ? "显示浏览器窗口" : "无头发布"}。回到主程序启用 X 插件并选择此账号。`);
       return;
     }

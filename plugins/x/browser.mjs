@@ -1,3 +1,4 @@
+import { restoreSession } from "./session.mjs";
 import { setTimeout as sleep } from "node:timers/promises";
 import { PluginError, numericId } from "./storage.mjs";
 import { textFor } from "./validation.mjs";
@@ -10,6 +11,7 @@ export async function openBrowser(profile, headless) {
   catch { throw new PluginError("x_runtime", "缺少 X 浏览器依赖，请重新运行 npm run plugin:build:x"); }
   try {
     const context = await launchPersistentContext({ userDataDir: profile, headless, locale: "en-US" });
+    try { await restoreSession(context, profile); } catch(error) { await context.close().catch(()=>{}); throw error; }
     context.setDefaultTimeout(30_000);
     context.setDefaultNavigationTimeout(60_000);
     return context;
@@ -90,7 +92,7 @@ export async function composeAndPost(page, request, config, journal, { progress 
     const deadline = Date.now() + 180_000;
     let ready = false;
     while (Date.now() < deadline) {
-      const previews = await form.locator('[data-testid="attachments"] [data-testid="removeMedia"], [data-testid="attachments"] [aria-label="Remove media"]').count();
+      const previews = await form.locator('[data-testid="attachments"] [data-testid="removeMedia"], [data-testid="attachments"] [aria-label="Remove media"], [data-testid="attachments"] [aria-label="移除媒体"], [data-testid="attachments"] [aria-label="移除媒體"], [data-testid="attachments"] [aria-label="メディアを削除"]').count();
       if (previews === count) { ready = true; break; }
       if (page.isClosed()) break;
       await sleep(500);
