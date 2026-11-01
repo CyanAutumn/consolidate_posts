@@ -137,7 +137,12 @@ pub fn upload(
         // Transport failures and unrecognized responses remain ambiguous.
         let key = match client.submit(publication, context, config, rating, &init) {
             Ok(key) => key,
-            Err(error) if error.code == "pixiv_rejected" => {
+            Err(error)
+                if matches!(
+                    error.code.as_str(),
+                    "pixiv_rejected" | "pixiv_not_submitted"
+                ) =>
+            {
                 journal.stage = "rejected".into();
                 persist(&path, &journal)?;
                 return Err(error);

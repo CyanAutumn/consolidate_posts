@@ -1,4 +1,5 @@
 mod browser_login;
+mod browser_submit;
 mod client;
 mod config;
 mod journal;

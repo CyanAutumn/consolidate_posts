@@ -19,7 +19,7 @@ struct BrowserLogin {
 }
 
 #[cfg(windows)]
-fn contain_children() -> Result<()> {
+pub(crate) fn contain_children() -> Result<()> {
     use windows_sys::Win32::{
         Foundation::CloseHandle,
         System::{
@@ -55,7 +55,7 @@ fn contain_children() -> Result<()> {
     Ok(())
 }
 #[cfg(not(windows))]
-fn contain_children() -> Result<()> {
+pub(crate) fn contain_children() -> Result<()> {
     Err(error("浏览器登录凭据存储需要 Windows"))
 }
 fn error(message: &str) -> AppError {

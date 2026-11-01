@@ -27,6 +27,7 @@ const ORIGIN_URL: &str = "https://www.pixiv.net";
 pub struct PixivClient {
     client: Client,
     base: String,
+    session: zeroize::Zeroizing<String>,
 }
 pub enum Progress {
     Running,
@@ -92,6 +93,7 @@ impl PixivClient {
         Ok(Self {
             client: make(headers)?,
             base: base.into(),
+            session: zeroize::Zeroizing::new(session.to_owned()),
         })
     }
     pub fn init(&self) -> Result<Value> {
@@ -146,6 +148,15 @@ impl PixivClient {
         rating: &str,
         init: &Value,
     ) -> Result<String> {
+        if self.base == ORIGIN_URL {
+            return crate::browser_submit::submit(
+                &self.session,
+                publication,
+                context,
+                config,
+                rating,
+            );
+        }
         let counter = Arc::new(AtomicU64::new(0));
         let mut form = Form::new()
             .text("title", publication.title.clone())
