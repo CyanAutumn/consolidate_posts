@@ -152,6 +152,7 @@ function makeClient(desktop = true) {
     desktop,
     platformAccounts: async () => state.platformAccounts ?? [],
     savePixivSettings: async(id,settings) => {calls.push(["pixiv-save",id,settings]);return settings;},
+    loginXiaohongshu: async (id) => { calls.push(["xiaohongshu-login", id]); },
     loginX: async (id) => { calls.push(["x-login", id]); },
     pixivSettings: async (id) => {
       calls.push(["pixiv-settings", id]);
@@ -329,7 +330,7 @@ test("browser preview clearly disables real upload, import and save", async () =
     ])
       assert.match(view.element.textContent, new RegExp(name));
     await click(button(view.element, "平台登录"));
-    assert.match(view.element.textContent, /4 个平台计划接入/);
+    assert.match(view.element.textContent, /3 个平台计划接入/);
   } finally {
     await view.dispose();
   }
@@ -767,4 +768,9 @@ test("X login opens from its platform card without copying commands", async () =
 test("Pixiv publication settings save without opening a login browser",async()=>{
  const {client,calls}=makeClient();const view=await mount(client);
  try{await click(button(view.element,"平台登录"));await click(button(view.element,"保存投稿设置"));assert.ok(calls.find(c=>c[0]==="pixiv-save"));assert.ok(!calls.find(c=>c[0]==="pixiv-login"));assert.match(view.element.textContent,/无需重新登录/);}finally{await view.dispose();}
+});
+
+test("Xiaohongshu login opens from its card and reports completion", async()=>{
+ const {client,calls}=makeClient();const view=await mount(client);
+ try{await click(button(view.element,"平台登录"));await click(button(view.element,"登录小红书"));assert.deepEqual(calls.find(c=>c[0]==="xiaohongshu-login"),["xiaohongshu-login","xiaohongshu"]);assert.match(view.element.textContent,/小红书登录成功/);}finally{await view.dispose();}
 });

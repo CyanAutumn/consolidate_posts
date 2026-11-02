@@ -458,11 +458,12 @@ impl Engine {
         )?;
         // A configuration failure happens before a remote submission or journal
         // exists. Retrying that legacy empty target may use the platform login.
-        if old
-            .error
-            .as_ref()
-            .is_some_and(|e| matches!(e.code.as_str(), "pixiv_config" | "x_config"))
-        {
+        if old.error.as_ref().is_some_and(|e| {
+            matches!(
+                e.code.as_str(),
+                "pixiv_config" | "x_config" | "xiaohongshu_config"
+            )
+        }) {
             let primary = self.platform_target(&target.id)?;
             if primary.id != target.id {
                 let mut attempt = old.clone();
@@ -501,7 +502,7 @@ impl Engine {
             job.id != old.id
                 && job.archive_id.as_ref() == Some(archive_id)
                 && (job.target_id.as_deref() == Some(&target.id)
-                    || (matches!(target.driver_id.as_str(), "pixiv" | "x")
+                    || (matches!(target.driver_id.as_str(), "pixiv" | "x" | "xiaohongshu")
                         && job.driver_id == target.driver_id))
                 && (job.status.is_active() || job.status == JobStatus::Succeeded)
         }) {

@@ -161,6 +161,7 @@ export interface ImportReport {
 export interface Client {
   platformAccounts(): Promise<PlatformAccount[]>;
   savePixivSettings(targetId: string, settings: PixivSettings): Promise<PixivSettings>;
+  loginXiaohongshu(targetId: string): Promise<void>;
   loginX(targetId: string): Promise<void>;
   pixivSettings(targetId: string): Promise<PixivSettings>;
   loginPixiv(targetId: string, settings: PixivSettings): Promise<void>;

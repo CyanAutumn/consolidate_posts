@@ -283,6 +283,23 @@ pub fn login_x(snapshot: &Snapshot, target_id: &str) -> Result<()> {
     run_command(&mut command, None)
 }
 
+pub fn login_xiaohongshu(snapshot: &Snapshot, target_id: &str) -> Result<()> {
+    if !snapshot
+        .history
+        .targets
+        .iter()
+        .any(|t| t.id == target_id && t.driver_id == "xiaohongshu")
+    {
+        return Err(error("小红书平台不存在"));
+    }
+    let mut command = Command::new(entry_for(snapshot, "xiaohongshu")?);
+    command
+        .args(["--login", "--data-dir"])
+        .arg(&snapshot.data_dir)
+        .args(["--target-id", target_id]);
+    run_command(&mut command, None)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

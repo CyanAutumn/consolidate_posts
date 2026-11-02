@@ -26,7 +26,7 @@ for (const entry of await readdir(source, { withFileTypes: true })) {
     filter: async (item) =>
       !["target", ".git"].includes(path.basename(item)) &&
       // Browser publishing/login helpers need their pinned Node dependencies.
-      (path.basename(item) !== "node_modules" || ["x", "pixiv"].includes(entry.name)) &&
+      (path.basename(item) !== "node_modules" || ["x", "pixiv", "xiaohongshu"].includes(entry.name)) &&
       !(await lstat(item)).isSymbolicLink(),
   });
 }

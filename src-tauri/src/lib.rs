@@ -223,6 +223,18 @@ async fn login_x(
         .await
 }
 #[tauri::command]
+async fn login_xiaohongshu(
+    hub: State<'_, WorkspaceHub>,
+    workspace_id: String,
+    target_id: String,
+) -> upload_core::Result<()> {
+    let hub = hub.inner().clone();
+    blocking(move || {
+        pixiv_login::login_xiaohongshu(&hub.engine(&workspace_id)?.snapshot()?, &target_id)
+    })
+    .await
+}
+#[tauri::command]
 async fn login_pixiv(
     hub: State<'_, WorkspaceHub>,
     workspace_id: String,
@@ -276,6 +288,7 @@ pub fn run() {
             login_pixiv,
             platform_accounts,
             login_x,
+            login_xiaohongshu,
             save_pixiv_settings
         ])
         .run(tauri::generate_context!())

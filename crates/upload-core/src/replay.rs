@@ -48,7 +48,7 @@ impl Engine {
                     job.kind == JobKind::Upload
                         && job.archive_id.as_deref() == Some(&archive.id)
                         && (job.target_id.as_deref() == Some(&target.id)
-                            || (matches!(target.driver_id.as_str(), "pixiv" | "x")
+                            || (matches!(target.driver_id.as_str(), "pixiv" | "x" | "xiaohongshu")
                                 && job.driver_id == target.driver_id))
                 })
                 .collect();

@@ -18,6 +18,9 @@ pub fn configured(root: &Path, target: &UploadTarget) -> bool {
     match target.driver_id.as_str() {
         "local-archive" => true,
         "pixiv" => folder.join("config.json").is_file() && folder.join("session.dpapi").is_file(),
+        "xiaohongshu" => {
+            folder.join("config.json").is_file() && folder.join("session.dpapi.json").is_file()
+        }
         "x" => folder.join("config.json").is_file() && folder.join("profile").is_dir(),
         _ => folder.join("config.json").is_file(),
     }
@@ -60,7 +63,7 @@ impl Engine {
     }
     pub(crate) fn platform_target(&self, id: &str) -> Result<UploadTarget> {
         let old = self.inner.store.target(id)?;
-        if !matches!(old.driver_id.as_str(), "pixiv" | "x") {
+        if !matches!(old.driver_id.as_str(), "pixiv" | "x" | "xiaohongshu") {
             return Ok(old);
         }
         let primary = self

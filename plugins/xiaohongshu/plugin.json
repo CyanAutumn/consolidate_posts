@@ -5,19 +5,19 @@
   "id": "xiaohongshu",
   "name": "小红书",
   "category": "内容社区",
-  "description": "计划支持图文笔记和视频笔记。",
-  "status": "planned",
+  "description": "通过独立浏览器登录并发布图文或单个 MP4 视频；需扫码登录创作者中心，尚未实号发布验证。",
+  "status": "ready",
   "kinds": [
     "image",
     "video"
   ],
   "acceptsTitle": true,
   "acceptsBody": true,
-  "maxFiles": null,
-  "maxFileBytes": null,
+  "maxFiles": 18,
+  "maxFileBytes": 536870912,
   "entry": {
     "type": "process",
     "path": "plugin.exe"
   },
-  "timeoutSeconds": 7200
+  "timeoutSeconds": 1800
 }

@@ -21,6 +21,7 @@ function desktopClient(workspaceId?: string): Client {
     desktop,
     platformAccounts: () => call("platform_accounts"),
     savePixivSettings: (targetId, settings) => call("save_pixiv_settings", { targetId, settings }),
+    loginXiaohongshu: (targetId) => call("login_xiaohongshu", { targetId }),
     loginX: (targetId) => call("login_x", { targetId }),
     pixivSettings: (targetId) => call("pixiv_settings", { targetId }),
     loginPixiv: (targetId, settings) => call("login_pixiv", { targetId, settings }),
@@ -57,6 +58,7 @@ function desktopClient(workspaceId?: string): Client {
 const preview: Client = {
   platformAccounts: async () => [],
   savePixivSettings: unavailable,
+  loginXiaohongshu: unavailable,
   loginX: unavailable,
   pixivSettings: unavailable,
   loginPixiv: unavailable,
