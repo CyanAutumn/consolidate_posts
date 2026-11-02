@@ -152,6 +152,9 @@ function makeClient(desktop = true) {
     desktop,
     platformAccounts: async () => state.platformAccounts ?? [],
     savePixivSettings: async(id,settings) => {calls.push(["pixiv-save",id,settings]);return settings;},
+    loginBilibili: async (id) => { calls.push(["bilibili-login", id]); },
+    bilibiliSettings: async () => ({category:"",tags:[],copyright:0,source:""}),
+    saveBilibiliSettings: async (id,settings) => { calls.push(["bilibili-settings",id,settings]); },
     loginXiaohongshu: async (id) => { calls.push(["xiaohongshu-login", id]); },
     loginX: async (id) => { calls.push(["x-login", id]); },
     pixivSettings: async (id) => {
@@ -330,7 +333,7 @@ test("browser preview clearly disables real upload, import and save", async () =
     ])
       assert.match(view.element.textContent, new RegExp(name));
     await click(button(view.element, "平台登录"));
-    assert.match(view.element.textContent, /3 个平台计划接入/);
+    assert.match(view.element.textContent, /2 个平台计划接入/);
   } finally {
     await view.dispose();
   }
@@ -773,4 +776,11 @@ test("Pixiv publication settings save without opening a login browser",async()=>
 test("Xiaohongshu login opens from its card and reports completion", async()=>{
  const {client,calls}=makeClient();const view=await mount(client);
  try{await click(button(view.element,"平台登录"));await click(button(view.element,"登录小红书"));assert.deepEqual(calls.find(c=>c[0]==="xiaohongshu-login"),["xiaohongshu-login","xiaohongshu"]);assert.match(view.element.textContent,/小红书登录成功/);}finally{await view.dispose();}
+});
+
+test("Bilibili login is independent of publication settings", async()=>{
+ const {client,calls}=makeClient();const view=await mount(client);
+ try{await click(button(view.element,"平台登录"));await click(button(view.element,"登录哔哩哔哩"));assert.deepEqual(calls.find(c=>c[0]==="bilibili-login"),["bilibili-login","bilibili"]);assert.match(view.element.textContent,/哔哩哔哩登录成功/);
+ await input(view.element.querySelector('[aria-label="B站分区路径"]'),"生活/日常");await input(view.element.querySelector('[aria-label="B站标签"]'),"测试, 视频");await input(view.element.querySelector('[aria-label="B站创作类型"]'),"1");await click(button(view.element,"保存B站投稿设置"));assert.deepEqual(calls.find(c=>c[0]==="bilibili-settings"),["bilibili-settings","bilibili",{category:"生活/日常",tags:["测试","视频"],copyright:1,source:""}]);
+ }finally{await view.dispose();}
 });

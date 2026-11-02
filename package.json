@@ -15,13 +15,15 @@
     "test:core": "cargo test -p upload-core",
     "check:rust": "cargo check --workspace",
     "test:ui": "node --test tests/ui.test.mjs",
-    "plugin:build": "npm run plugin:build:pixiv && npm run plugin:build:x && npm run plugin:build:xiaohongshu",
+    "plugin:build": "npm run plugin:build:pixiv && npm run plugin:build:x && npm run plugin:build:xiaohongshu && npm run plugin:build:bilibili",
     "plugin:build:pixiv": "powershell -ExecutionPolicy Bypass -File plugins/pixiv/build-plugin.ps1",
     "test:pixiv": "cargo test --manifest-path plugins/pixiv/Cargo.toml && npm --prefix plugins/pixiv test",
     "plugin:build:x": "powershell -ExecutionPolicy Bypass -File plugins/x/build-plugin.ps1",
     "test:x": "npm --prefix plugins/x test",
     "plugin:build:xiaohongshu": "powershell -ExecutionPolicy Bypass -File plugins/xiaohongshu/build-plugin.ps1",
-    "test:xiaohongshu": "npm --prefix plugins/xiaohongshu test"
+    "test:xiaohongshu": "npm --prefix plugins/xiaohongshu test",
+    "plugin:build:bilibili": "powershell -ExecutionPolicy Bypass -File plugins/bilibili/build-plugin.ps1",
+    "test:bilibili": "npm --prefix plugins/bilibili test"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.0.0",

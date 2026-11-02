@@ -161,6 +161,9 @@ export interface ImportReport {
 export interface Client {
   platformAccounts(): Promise<PlatformAccount[]>;
   savePixivSettings(targetId: string, settings: PixivSettings): Promise<PixivSettings>;
+  loginBilibili(targetId:string):Promise<void>;
+  bilibiliSettings(targetId:string):Promise<BilibiliPosting>;
+  saveBilibiliSettings(targetId:string,settings:BilibiliPosting):Promise<void>;
   loginXiaohongshu(targetId: string): Promise<void>;
   loginX(targetId: string): Promise<void>;
   pixivSettings(targetId: string): Promise<PixivSettings>;
@@ -196,3 +199,5 @@ export interface PixivSettings {
   rating: string | null; original: boolean; allowTagEdit: boolean; allowComment: boolean;
 }
 export interface PlatformAccount { driverId: string; targetId: string; connected: boolean; name: string }
+
+export interface BilibiliPosting {category:string; tags:string[]; copyright:number; source:string;}

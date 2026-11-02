@@ -300,6 +300,87 @@ pub fn login_xiaohongshu(snapshot: &Snapshot, target_id: &str) -> Result<()> {
     run_command(&mut command, None)
 }
 
+pub fn login_bilibili(snapshot: &Snapshot, target_id: &str) -> Result<()> {
+    if !snapshot
+        .history
+        .targets
+        .iter()
+        .any(|t| t.id == target_id && t.driver_id == "bilibili")
+    {
+        return Err(error("哔哩哔哩平台不存在"));
+    }
+    let mut command = Command::new(entry_for(snapshot, "bilibili")?);
+    command
+        .args(["--login", "--data-dir"])
+        .arg(&snapshot.data_dir)
+        .args(["--target-id", target_id]);
+    run_command(&mut command, None)
+}
+
+#[derive(Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct BilibiliPosting {
+    pub category: String,
+    pub tags: Vec<String>,
+    pub copyright: u8,
+    pub source: String,
+}
+fn bilibili_directory(snapshot: &Snapshot, target_id: &str) -> Result<PathBuf> {
+    if !snapshot
+        .history
+        .targets
+        .iter()
+        .any(|t| t.id == target_id && t.driver_id == "bilibili")
+        || target_id.is_empty()
+        || !target_id
+            .bytes()
+            .all(|c| c.is_ascii_alphanumeric() || c == b'-')
+    {
+        return Err(error("哔哩哔哩平台不存在"));
+    }
+    Ok(Path::new(&snapshot.data_dir)
+        .join("plugin-data/bilibili")
+        .join(target_id))
+}
+pub fn bilibili_settings(snapshot: &Snapshot, target_id: &str) -> Result<BilibiliPosting> {
+    let file = bilibili_directory(snapshot, target_id)?.join("posting.json");
+    match fs::read_to_string(file) {
+        Ok(s) => serde_json::from_str(s.trim_start_matches('\u{feff}'))
+            .map_err(|_| error("哔哩哔哩投稿设置损坏")),
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(BilibiliPosting::default()),
+        Err(e) => Err(e.into()),
+    }
+}
+pub fn save_bilibili_settings(
+    snapshot: &Snapshot,
+    target_id: &str,
+    settings: BilibiliPosting,
+) -> Result<()> {
+    if settings.category.trim().is_empty()
+        || settings.category.len() > 300
+        || !matches!(settings.copyright, 1 | 2)
+        || settings.tags.is_empty()
+        || settings.tags.len() > 10
+        || settings
+            .tags
+            .iter()
+            .any(|t| t.trim().is_empty() || t.encode_utf16().count() > 20 || t.contains(','))
+        || settings.source.encode_utf16().count() > 200
+        || (settings.copyright == 2 && settings.source.trim().is_empty())
+    {
+        return Err(error(
+            "请填写分区、1–10 个标签、自制/转载；转载还需填写来源",
+        ));
+    }
+    let directory = bilibili_directory(snapshot, target_id)?;
+    fs::create_dir_all(&directory)?;
+    let file = directory.join("posting.json");
+    let temp = directory.join("posting-settings.tmp");
+    fs::write(&temp, serde_json::to_vec_pretty(&settings)?)?;
+    fs::rename(temp, file)?;
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -310,6 +391,27 @@ mod tests {
             "dataDir":root,"archiveDir":root,"concurrency":2,
             "history":{"archives":[],"plans":[],"targets":[{"id":"pixiv","driverId":"pixiv","name":"test","createdAt":0}]}
         })).unwrap()
+    }
+    #[test]
+    fn bilibili_posting_settings_validate_target_and_roundtrip() {
+        let root = tempfile::tempdir().unwrap();
+        let mut view = snapshot(root.path());
+        view.history.targets.push(serde_json::from_value(serde_json::json!({"id":"bilibili","driverId":"bilibili","name":"test","createdAt":0})).unwrap());
+        assert!(bilibili_settings(&view, "../outside").is_err());
+        assert!(save_bilibili_settings(&view, "bilibili", BilibiliPosting::default()).is_err());
+        let mut value = BilibiliPosting {
+            category: "生活/日常".into(),
+            tags: vec!["测试".into()],
+            copyright: 1,
+            source: String::new(),
+        };
+        save_bilibili_settings(&view, "bilibili", value.clone()).unwrap();
+        assert_eq!(bilibili_settings(&view, "bilibili").unwrap().copyright, 1);
+        value.copyright = 2;
+        assert!(save_bilibili_settings(&view, "bilibili", value.clone()).is_err());
+        value.source = "https://example.com/source".into();
+        save_bilibili_settings(&view, "bilibili", value).unwrap();
+        assert_eq!(bilibili_settings(&view, "bilibili").unwrap().copyright, 2);
     }
     #[test]
     fn settings_are_bound_to_existing_workspace_targets() {

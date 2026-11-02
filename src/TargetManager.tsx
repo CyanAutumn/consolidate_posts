@@ -1,3 +1,4 @@
+import { BilibiliAccountHelp } from "./BilibiliAccountHelp";
 import { XiaohongshuAccountHelp } from "./XiaohongshuAccountHelp";
 import { ArrowRight } from "lucide-react";
 import type { Client, Driver, UploadTarget, PlatformAccount } from "./types";
@@ -20,6 +21,7 @@ export function TargetManager({client,drivers,targets,accounts,enabledDriverIds,
         <small>{driver.id === "local-archive" ? "本地保存，无需登录" : driver.status !== "ready" ? "尚未接入" : connected ? "已登录" : "未登录"}</small>
         {!enabled && <small>当前工作区未启用，可先登录；发布前请在“工作区管理”启用此平台。</small>}
         {driver.id === "pixiv" && <PixivAccountHelp key={`${dataDir}/${target.id}`} client={client} targetId={target.id} dataDir={dataDir} pluginDir={pluginDir} connected={connected} onLoggedIn={refresh} />}
+        {driver.id === "bilibili" && <BilibiliAccountHelp key={`${dataDir}/${target.id}`} client={client} targetId={target.id} connected={connected} onLoggedIn={refresh} />}
         {driver.id === "xiaohongshu" && <XiaohongshuAccountHelp key={`${dataDir}/${target.id}`} client={client} targetId={target.id} connected={connected} onLoggedIn={refresh} />}
         {driver.id === "x" && <XAccountHelp key={`${dataDir}/${target.id}`} client={client} targetId={target.id} connected={connected} onLoggedIn={refresh} />}
       </div><button className="button secondary small" disabled={driver.status !== "ready" || !enabled} onClick={() => replay(target.id)}>补传历史<ArrowRight size={14}/></button></div>;

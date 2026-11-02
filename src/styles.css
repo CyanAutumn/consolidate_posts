@@ -2071,21 +2071,21 @@ textarea {
   }
 }
 /* Account configuration stays inside the selected workspace's target card. */
-.pixiv-account-help {
+:is(.pixiv-account-help, .bilibili-account-help) {
   margin-top: 10px;
   max-width: 620px;
   font-size: 12px;
 }
-.pixiv-account-help summary {
+:is(.pixiv-account-help, .bilibili-account-help) summary {
   cursor: pointer;
   color: var(--accent, #27835c);
 }
-.pixiv-account-help p {
+:is(.pixiv-account-help, .bilibili-account-help) p {
   line-height: 1.65;
   color: #617267;
   margin: 10px 0;
 }
-.pixiv-account-help textarea {
+:is(.pixiv-account-help, .bilibili-account-help) textarea {
   width: 100%;
   min-height: 72px;
   resize: vertical;

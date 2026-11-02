@@ -5,16 +5,15 @@
   "id": "bilibili",
   "name": "哔哩哔哩",
   "category": "视频平台",
-  "description": "计划接入视频投稿，需平台授权。",
-  "status": "planned",
+  "description": "通过独立浏览器登录创作中心，发布单个 MP4 视频；需设置分区、标签和自制/转载。尚未实号投稿验证。",
+  "status": "ready",
   "kinds": [
-    "image",
     "video"
   ],
   "acceptsTitle": true,
   "acceptsBody": true,
-  "maxFiles": null,
-  "maxFileBytes": null,
+  "maxFiles": 1,
+  "maxFileBytes": 2147483648,
   "entry": {
     "type": "process",
     "path": "plugin.exe"

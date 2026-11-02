@@ -235,6 +235,48 @@ async fn login_xiaohongshu(
     .await
 }
 #[tauri::command]
+async fn login_bilibili(
+    hub: State<'_, WorkspaceHub>,
+    workspace_id: String,
+    target_id: String,
+) -> upload_core::Result<()> {
+    let hub = hub.inner().clone();
+    blocking(move || {
+        pixiv_login::login_bilibili(&hub.engine(&workspace_id)?.snapshot()?, &target_id)
+    })
+    .await
+}
+
+#[tauri::command]
+async fn bilibili_settings(
+    hub: State<'_, WorkspaceHub>,
+    workspace_id: String,
+    target_id: String,
+) -> upload_core::Result<pixiv_login::BilibiliPosting> {
+    let hub = hub.inner().clone();
+    blocking(move || {
+        pixiv_login::bilibili_settings(&hub.engine(&workspace_id)?.snapshot()?, &target_id)
+    })
+    .await
+}
+#[tauri::command]
+async fn save_bilibili_settings(
+    hub: State<'_, WorkspaceHub>,
+    workspace_id: String,
+    target_id: String,
+    settings: pixiv_login::BilibiliPosting,
+) -> upload_core::Result<()> {
+    let hub = hub.inner().clone();
+    blocking(move || {
+        pixiv_login::save_bilibili_settings(
+            &hub.engine(&workspace_id)?.snapshot()?,
+            &target_id,
+            settings,
+        )
+    })
+    .await
+}
+#[tauri::command]
 async fn login_pixiv(
     hub: State<'_, WorkspaceHub>,
     workspace_id: String,
@@ -289,6 +331,9 @@ pub fn run() {
             platform_accounts,
             login_x,
             login_xiaohongshu,
+            login_bilibili,
+            bilibili_settings,
+            save_bilibili_settings,
             save_pixiv_settings
         ])
         .run(tauri::generate_context!())
